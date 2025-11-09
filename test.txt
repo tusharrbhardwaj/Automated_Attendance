@@ -1,8 +1,8 @@
-1. Tushar
-2. Satindar
-3. Abdullah
-4. Abhinarayan
-5. Aihem
-6. Anna
-7. Kerem
-8. Marcus
+Tushar
+Satindar
+Abdullah
+Abhinarayan
+Aihem
+Anna
+Kerem
+Marcus
