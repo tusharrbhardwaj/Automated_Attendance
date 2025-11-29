@@ -2,10 +2,15 @@
 This is the information file and provides the main file with main information like data, date and validation of both.
 '''
 
-import csv
-import re
+import csv #To read data from csv file
+import re #To search and print regular expression
+from colorama import Fore as color #To make the code prettier and make the output in the terminal colorful
 from datetime import date
 
+'''
+In this file color.red is used to showcase warning or error messages to the user and color.green represents the successfullness of the funciton.
+Moreover, color.white is used to showcase normal texts or input texts.
+'''
 
 def ReadFile():
     
@@ -16,8 +21,10 @@ def ReadFile():
     Furthermore, it prints the the list of studentes who were present sorted alphabatically,
     printing the toatal stength of the class is also achieved by this function.
     
-    At last, if the date of the data and the current date does not match, it takes the choice from date_validation and then
-    works on the if condition.
+    It then compares the current_date to the date of the data to ensure that the user is marking the attendance for the correct
+    date.
+    If the date of the data and the current data does not matches, it gets a confirmation choice from the user asking
+    if he still wants to continue with old date data.
     '''
     with open(name,'r') as attendee:
         reader = csv.reader(attendee)
@@ -35,9 +42,9 @@ def ReadFile():
 
         global data_date
         data_date = validated_date[0]
-        choice = validated_date[1]
+        current_date = validated_date[1]
         
-        print("We are marking Attendance for Date :", data_date)
+        print(color.WHITE + "We are marking Attendance for Date :", data_date)
         
         #student_present containts the name column of the csv file indexed from data
         student_present = [students[-2] for students in data]
@@ -50,12 +57,17 @@ def ReadFile():
                 attendee.write(names+'\n')
 
     #len(student_present) counts the number of students who were present in the class and then prints them out
-    print("Total Students present in class : ",len(student_present))
+    print(color.CYAN + "Total Students present in class : ",len(student_present))
     
-    #choice is indexed from the returned value from date_validation() to ensure the progress of the function even after date mismatch
-    if choice in 'Yy':
-        #Dummy data print, later would be replaced by selenium execution in main.py
-        print("Opening the broswer to mark the attendance")
+    #Following logic block compares the dates from current_date() and attendance_date()
+    if (current_date != data_date):
+        print(color.RED + "The Date of the data does not matches to today's date !")
+        print(color.RED + f"Today's Date is {current_date}, While the data we are working with is of date {data_date}")
+        choice = input(color.RED + "Are you sure you still want to continue with the current Data-File? : ")
+        #choice is indexed from the returned value from date_validation() to ensure the progress of the function even after date mismatch
+        if choice in 'Yy':
+            #Dummy data print, later would be replaced by selenium execution in main.py
+            print(color.GREEN + "Opening the broswer to mark the attendance")
 
 
 
@@ -70,10 +82,10 @@ def validation():
         if open(name,'r'):
             return True
     except FileNotFoundError:
-        print("Try Entering the Correct Name of the Attendance File")
+        print(color.RED + "Oops ! No such file in the folder, try Entering the Correct Name of the Attendance File")
         main()
     except:
-        print("There is some problem with the program in validation() or main().")
+        print(color.RED + "There is some problem with the program in validation() or main().")
  
  
    
@@ -85,10 +97,7 @@ def date_validation():
     
     The date of the data is extracted out from the csv file using re as in csv file the data is in regular expression for date.
     
-    It then compares the current_date to the date of the data to ensure that the user is marking the attendance for the correct
-    date.
-    If the date of the data and the current data does not matches, it gets a confirmation choice from the user asking
-    if he still wants to continue with old date data.
+    both current_date and attendance_date are treated as return value of the function.
     '''
     def current_date():
         #todays_date contains current date using date functon 
@@ -112,14 +121,8 @@ def date_validation():
     
     #attendance_date calls attendance_date() and stores the return value to ensure better reusablity of function without recalling it multiple times.
     attendance_date = attendance_date(raw_date)
-    
-    #Following logic block compares the dates from current_date() and attendance_date()
-    if (current_date != attendance_date):
-        print("The Date of the data does not matches to today's date !")
-        print(f"Today's Date is {current_date}, While the data we are working with is of date {attendance_date}")
-        choice = input("Are you sure you still want to continue with the current Data-File? : ")
 
-    return attendance_date, choice
+    return attendance_date, current_date
      
 
     
@@ -128,7 +131,7 @@ def main():
     main() calls the other functions of the programs and ensure the conditional and respectful execution of each function. 
     '''
     global name
-    name = input('Enter the name : ')
+    name = input(color.WHITE + 'Enter the name : ')
     name = name+'.csv'
     
     
