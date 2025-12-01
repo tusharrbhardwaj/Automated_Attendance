@@ -6,13 +6,13 @@ import csv #To read data from csv file
 import re #To search and print regular expression
 from colorama import Fore as color #To make the code prettier and make the output in the terminal colorful
 from datetime import date
-
+import pyinputplus as pyin
 '''
 In this file color.red is used to showcase warning or error messages to the user and color.green represents the successfullness of the funciton.
 Moreover, color.white is used to showcase normal texts or input texts.
 '''
 
-def ReadFile():
+def ReadFile(attendance_file_name):
     
     '''
     The vairbale "name" refers to the name of the file that containts the attendance list.
@@ -20,12 +20,13 @@ def ReadFile():
     ReadFile() pickes the name and read the file, further it takes date information from date_validation().
     Furthermore, it prints the the list of studentes who were present sorted alphabatically,
     printing the toatal stength of the class is also achieved by this function.
-    
     It then compares the current_date to the date of the data to ensure that the user is marking the attendance for the correct
     date.
     If the date of the data and the current data does not matches, it gets a confirmation choice from the user asking
     if he still wants to continue with old date data.
     '''
+    
+    name = attendance_file_name
     with open(name,'r') as attendee:
         reader = csv.reader(attendee)
         next(reader)
@@ -55,7 +56,7 @@ def ReadFile():
         with open(f"{data_date}.txt",'w') as attendee:
             for names in student_present:
                 attendee.write(names+'\n')
-
+    
     #len(student_present) counts the number of students who were present in the class and then prints them out
     print(color.CYAN + "Total Students present in class : ",len(student_present))
     
@@ -63,15 +64,16 @@ def ReadFile():
     if (current_date != data_date):
         print(color.RED + "The Date of the data does not matches to today's date !")
         print(color.RED + f"Today's Date is {current_date}, While the data we are working with is of date {data_date}")
-        choice = input(color.RED + "Are you sure you still want to continue with the current Data-File? : ")
+        choice = pyin.inputYesNo(prompt = color.RED + "Are you sure you still want to continue with the current Data-File? : ")
         #choice is indexed from the returned value from date_validation() to ensure the progress of the function even after date mismatch
-        if choice in 'Yy':
+        if choice == 'yes':
             #Dummy data print, later would be replaced by selenium execution in main.py
-            print(color.GREEN + "Opening the broswer to mark the attendance")
+            print(color.GREEN + "Marking Attendance")
 
+        else:
+            print(color.RED + "Attendance Marking Aborted due to date mismatch.")
 
-
-def validation():
+def validation(attendance_file_name):
     '''
     validation() validates the file and looks if that exists.
     If the file given as inputed by the user does not exists, it raises an error instead of crashing the program and then,
@@ -79,7 +81,7 @@ def validation():
     Or if there is some other problem, it returns with specified error message.
     '''
     try:
-        if open(name,'r'):
+        if open(attendance_file_name,'r'):
             return True
     except FileNotFoundError:
         print(color.RED + "Oops ! No such file in the folder, try Entering the Correct Name of the Attendance File")
@@ -126,20 +128,19 @@ def date_validation():
      
 
     
-def main():
+def main(attendance_file_name):
     '''
     main() calls the other functions of the programs and ensure the conditional and respectful execution of each function. 
     '''
-    global name
-    name = input(color.WHITE + 'Enter the name : ')
-    name = name+'.csv'
-    
-    
-    if validation():
-        ReadFile()
+    try:
         
+        if validation(attendance_file_name):
+            ReadFile(attendance_file_name)
+            return True
+    except:
+        print(color.RED + "There is some problem with the program in inforamtion.main().")
+        return False
 
-if __name__ == '__main__':
-    
-    main()
+if __name__ == '__main__':   
+    pass
     
