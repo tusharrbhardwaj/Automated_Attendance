@@ -25,6 +25,9 @@ from colorama import Fore as color
 import initializer
 #import automation module to perform all the browser automation tasks
 import automation
+#import data_comparsion module to compare the attendance data with the student list
+import information
+import data_comparsion
 #import pyinputplus module to take validated inputs from user.
 import pyinputplus as pyin
 
@@ -77,19 +80,71 @@ try:
 
                     
                     if navigated_students:
+                        #result stores the return value from data_extraction() to ensure the progress of the function even after initial failure
+                        '''if result is True, it compares the data else raises an error.'''
+                        #result stores the return value from data_extraction() to ensure the progress of the function even after initial failure
+                        result = False
                         '''
                         if navigation to students list is successfull, it tries to extract data from there and save it into a csv file.
                         '''
                         try:
                             #file_name is created using module_code to avoid confusion between multiple modules data files
-                            file_name = module_code+"_students_list.csv"
+                            file_name = module_code+"_students_list.txt"
                             automation.data_extraction(file_name)
-                            print(color.GREEN+f"File saves successfully as '{file_name}'.")
+                            print(color.GREEN+f"File saved successfully as '{file_name}'.")
+                            result = True
                         except:
                             print(color.RED + "There was some error in data extraction, please try again.")
+                            result = False
+                    
                     else:
                         print(color.RED + "There was some error navigating to the students list.")
                     
+                    if result:
+                        '''
+                        if data extraction is successfull, it tries to reterive information from that data using information.py
+                        and then compares that data with the student list using data_comparsion.py
+                        '''
+                        #data_file_name takes input from user for the name of attendance list file(without extension)
+                        data_file_name = input(color.WHITE + 'Enter the name of the attendance_list: ')
+                        #data_file_name_txt and data_file_name_csv creates the file names with appropriate extensions
+                        data_file_name_txt = data_file_name+'.txt'
+                        data_file_name_csv = data_file_name+'.csv'
+                        #attendance_file_name creates the attendance file name using module_code to avoid confusion between multiple modules data files
+                        attendance_file_name = module_code+'_attendance_list.txt'
+                        #info_reterival stores the return value from information.main() to ensure the progress of the function even after initial failure
+                        info_reterival = information.main(data_file_name_csv)
+                        
+                        try:
+                            #Renaming the generated attendance file to include module code for clarity
+                            os.rename(data_file_name_txt, attendance_file_name)
+                            print(color.GREEN + f"Attendance file renamed to '{attendance_file_name}' successfully.")
+                        except:
+                            print(color.RED + "There was some error renaming the attendance file.")
+                        
+                        
+                        if info_reterival:
+                            '''
+                            info_reterival is True if information reterival is successfull otherwise, raises an error.
+                            If information reterival is successfull, it compares the data using data_comparsion.comparison()    
+                            '''
+                            print(color.GREEN + "Information reterival successfull.")
+                            try:
+                                '''
+                                data_comparsion.comparison() compares the data extracted from the module's student list and the attendance list provided by the user.
+                                It then creates two separate files named 'present.txt' and 'absent.txt' to store the names of present and absent students respectively.
+                                '''
+                                data_comparsion.comparison(attendance_file_name,file_name)
+                            except:
+                                print(color.RED + "There was some error in data comparsion.")
+                        
+                        else:
+                            print(color.RED + "Information reterival from information.py was not successfull.")
+                        
+                    else:
+                        print(color.RED + "Data extraction from was not successfull, cannot proceed to information reterival.")
+                        
+                        
                 else:
                     module_code = input(color.WHITE + "Hello Professor ! Please Enter the Module Code You want to mark attendance for : ")
                     #navigaed_module stores the return value from navigate_module() to ensure the progress of the function even after initial failure
