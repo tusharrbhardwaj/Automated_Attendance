@@ -114,12 +114,15 @@ def login_verification():
         print(color.RED + "There was error logging into your account, please check the credentials once.")
         return False
 
+
 def navigate_module(module_code):
     '''
     navigate_module() tries to find the module of which the code is entered.
     This function runs in loop to ensure scrolling until the module is found.
     If the module is found, the hyperlink is clicked otherwise, scrolling is continued.
     '''
+    found = False
+    loop_run = 0
     while True:
         try:
             #module_path makes the XPATH of module by taking module_code as input from the user.
@@ -128,12 +131,20 @@ def navigate_module(module_code):
             '''Following line of code is used to scrolling until "module" is found the webpage.'''
             driver.execute_script("arguments[0].scrollIntoView({behavior:'smooth', block:'center'});",module)
             module.click()
+            found = True
             '''If the module us found, the loops breaks out after clicking the module's hyperlink.'''
             break
         except:
             '''Otherwise it continues to scroll in vertical direction by 300px'''
             driver.execute_script("window.scrollBy(0, 300)")
             sleep(1)
+            loop_run+=1
+            found = False
+            if loop_run > 15:
+                print(color.RED + "Could not find the module, please check the module code once and try again")
+                break
+            
+    return found
             
             
 def navigating_student():
@@ -188,22 +199,11 @@ def main():
     of program instead of crashing program.
     '''
     '''module_code stores the code of the module to navigate it using selenium'''
-    module_code = input(color.WHITE + "Hello Professor ! Please Enter the Module Code You want to mark attendance for : ")
+    
     startup()
     try:
         '''This try-except block is nested with other try-except blocks to ensure error handeling at
         execution of every funciton.'''
-        driver.get(url)
-        driver.maximize_window()
-        try:
-            try: 
-                navigate_module(module_code)
-                print(color.GREEN + f"Found the module {module_code}")
-            except:
-                print("could not find the module")
-                sys.exit(color.RED + "exiting the program")
-        except SystemExit:
-            raise
 
         try:
             navigating_student()
