@@ -135,6 +135,8 @@ try:
                                 It then creates two separate files named 'present.txt' and 'absent.txt' to store the names of present and absent students respectively.
                                 '''
                                 data_comparsion.comparison(attendance_file_name,file_name)
+                                data_comparsion.organizer(module_code,information.data_date)
+                                print(color.GREEN + "Data comparsion successfull.") 
                             except:
                                 print(color.RED + "There was some error in data comparsion.")
                         
