@@ -20,23 +20,36 @@ try:
         
             if login_verification == True:
             
-                module_code = input(color.WHITE + "Hello Professor ! Please Enter the Module Code You want to mark attendance for : ")
+                module_code = input(color.WHITE + "Hello Professor ! Please Enter the Module Code You want to mark attendance for : ").upper()
                 try:
+                    print(color.CYAN+"Navigating to the module ...")
                     navigated_module = automation.navigate_module(module_code)
-                    print(color.GREEN + f"Found the module {module_code}")
                 except:
                     print(color.RED + "Could not find the module, please check the module code once and try again")
-                    navigated_module = module_code = input(color.WHITE + "Hello Professor ! Please Enter the Module Code You want to mark attendance for : ")
-                    automation.navigate_module(module_code)
             
                 if navigated_module:
                     print(color.GREEN+ f"Navigated to the module {module_code} successfully.")
                     try:
-                        automation.navigating_student()
+                        navigated_students = automation.navigating_student()
                         print(color.GREEN+ "Navigated to the students list sucessfully.")
                     except:
                         print(color.RED+ " There was some error navigating to the students list, please try again.")
-        
+
+                    
+                    if navigated_students:
+                        try:
+                            file_name = module_code+"_students_list.csv"
+                            automation.data_extraction(file_name)
+                            print(color.GREEN+f"File saves successfully as '{file_name}'.")
+                        except:
+                            print(color.RED + "There was some error in data extraction, please try again.")
+                    else:
+                        print(color.RED + "There was some error navigating to the students list.")
+                    
+                else:
+                    navigated_module = module_code = input(color.WHITE + "Hello Professor ! Please Enter the Module Code You want to mark attendance for : ")
+                    automation.navigate_module(module_code)
+            
             else:
                 '''
                 After login attempt raises any error, crediblity of login credentials is quentioned,
