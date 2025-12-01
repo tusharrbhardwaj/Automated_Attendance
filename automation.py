@@ -163,10 +163,10 @@ def navigating_student():
     #student_filter stores data to sort students
     student_filter = driver.find_element(By.XPATH, '//*[@id="tab-0"]/select/option[2]')
     student_filter.click()
-    
+    return True
     
 
-def data_extraction():
+def data_extraction(file_name):
     '''
     data_extraction() reterieves the total list of students from the attendance portal of the module
     Since, study.gisma.com follows dynamic website layout, it needs to be scrolled down to bottom
@@ -186,11 +186,10 @@ def data_extraction():
     
     name = [st_names.text for st_names in names]
     '''Follwoing line of code prints the reterived data to file named "student.txt"'''
-    with open('student.txt','w') as data_file:
+    with open(file_name,'w') as data_file:
         for student_name in name:
             data_file.write(student_name)
         print(color.GREEN + "Student Data retrieved Successfully!")
-        print(color)
     
     
 def main():
