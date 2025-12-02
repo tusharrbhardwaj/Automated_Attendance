@@ -16,7 +16,7 @@ Main features:
 ---
 
 ## Repository structure (files & purpose)
-
+```bash
 Automated_Attendance/
 ├─ main.py # Orchestrator: checks config, calls automation, comparison, organizer
 ├─ automation.py # Selenium logic: startup(), login(), navigate_module(), data_extraction(), ...
@@ -26,7 +26,7 @@ Automated_Attendance/
 ├─ requirements.txt # Python dependencies (generated)
 ├─ README.md # This file
 └─ config.json # (created via initializer.py) stores credentials (NOT in repo)
-
+```
 ---
 ## Installation & setup
 
