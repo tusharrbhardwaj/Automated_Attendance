@@ -148,7 +148,7 @@ try:
                         
                         
                 else:
-                    module_code = input(color.WHITE + "Hello Professor ! Please Enter the Module Code You want to mark attendance for : ")
+                    module_code = input(color.WHITE + "Hello Professor ! Please Enter the Module Code You want to mark attendance for : ").upper()
                     #navigaed_module stores the return value from navigate_module() to ensure the progress of the function even after initial failure
                     navigated_module =automation.navigate_module(module_code)
             
