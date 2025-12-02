@@ -1,0 +1,12 @@
+# Core
+colorama==0.4.6
+pyinputplus==0.2.12
+
+# Web scraping / browser automation
+beautifulsoup4==4.12.2
+selenium==4.15.0
+webdriver-manager==3.10.1
+requests==2.32.0
+
+
+
